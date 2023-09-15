@@ -1,8 +1,8 @@
 import Footer from "./footer";
 import Wallet_modal from "./modal/wallet_modal";
-import BidsModal from "./modal/bidsModal";
-import SellModal from "./modal/onSellNFT";
 import BuyModal from "./modal/buyModal";
+import SellModal from "./modal/onSellNFT";
+import ProfileModal from "./modal/profileModal";
 import { useRouter } from "next/router";
 import Header01 from "./header/Header01";
 import Header02 from "./header/Header02";
@@ -34,8 +34,8 @@ export default function Layout({ children }) {
       {header}
       <Wallet_modal />
       <SellModal />
-      <BidsModal />
       <BuyModal />
+      <ProfileModal />
       <main>{children}</main>
       <Footer />
     </>

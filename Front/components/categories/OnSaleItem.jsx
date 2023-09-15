@@ -40,9 +40,9 @@ const OnSaleNFT = () => {
     setFilteredNFTs(filteredData);
   }, [userNFTs, localAddress]); // Trigger the filter when userNFTs or localAddress change
   
-  console.log("Data: ", userNFTs);
-  console.log("Address: ", localAddress);
-  console.log("Filtered NFTs: ", filteredNFTs);
+  // console.log("Data: ", userNFTs);
+  // console.log("Address: ", localAddress);
+  // console.log("Filtered NFTs: ", filteredNFTs);
 
   return (
     <div className="grid grid-cols-1 gap-[1.875rem] md:grid-cols-2 lg:grid-cols-4">

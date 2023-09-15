@@ -9,13 +9,13 @@ import "tippy.js/dist/tippy.css"; // optional
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Meta from "../../components/Meta";
 import { useDispatch } from "react-redux";
-import { sellModalShow } from "../../redux/counterSlice";
+import { profileModalShow } from "../../redux/counterSlice";
 
 const User = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const pid = router.query.user;
-
+  const [ profileImage, setProfileImage ] = useState("");
   const [localAddress, setLocalAddress] = useState(''); 
   const [likesImage, setLikesImage] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -30,9 +30,15 @@ const User = () => {
 
   useEffect(() => {
     const storedAddress = localStorage.getItem('defaultAccount');
+    const storedProfileImage = localStorage.getItem('selectedProfileImage');
 
     if (storedAddress) {
       setLocalAddress(storedAddress);
+    }
+
+    if (storedProfileImage) {
+      // Set the stored profile image as the initial state
+      setProfileImage(storedProfileImage);
     }
 
     setTimeout(() => {
@@ -67,10 +73,10 @@ const User = () => {
                   <Image
                       width={141}
                       height={141}
-                      src ="/images/avatars/default.jpg"
+                      src ={profileImage}
                       alt="Deafult Profile Image"
                       className="dark:border-jacarta-600 rounded-xl border-[5px] border-white w-full h-full object-contain"
-                      onClick={() => dispatch(sellModalShow({pid}))}
+                      onClick={() => dispatch(profileModalShow())}
                     />
                     <div
                       className="dark:border-jacarta-600 bg-green absolute -right-3 bottom-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white"

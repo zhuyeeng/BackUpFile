@@ -12,11 +12,12 @@ const initialState = {
   filteredRenkingData: [],
   walletModal: false,
   sellModal: false,
-  bidsModal: false,
+  profileModal: false,
   buyModal: false,
   propartiesModalValue: false,
   trendingCategorySorText: "",
   price: null,
+  selectedProfileImage: "/images/avatars/default.jpg",
 };
 
 export const counterSlice = createSlice({
@@ -52,16 +53,16 @@ export const counterSlice = createSlice({
     sellModalHide: (state) => {
       state.sellModal = false;
     },
-    bidsModalShow: (state, action) => {
-      state.bidsModal = true;
+    buyModalShow: (state,action) => {
+      state.buyModal = true;
       state.pid = action.payload;
       state.price = action.payload;
     },
-    bidsModalHide: (state) => {
-      state.bidsModal = false;
+    profileModalShow: (state) => {
+      state.profileModal = true;
     },
-    buyModalShow: (state) => {
-      state.buyModal = true;
+    profileModalHide: (state) => {
+      state.profileModal = false;
     },
     buyModalHide: (state) => {
       state.buyModal = false;
@@ -171,6 +172,9 @@ export const counterSlice = createSlice({
       }
       state.filteredRenkingData = tempItem;
     },
+    setSelectedProfileImage: (state, action) => {
+      state.selectedProfileImage = action.payload;
+    },
   },
 });
 
@@ -184,10 +188,10 @@ export const {
   walletModalhide,
   sellModalShow,
   sellModalHide,
-  bidsModalShow,
-  bidsModalHide,
   buyModalShow,
   buyModalHide,
+  profileModalShow,
+  profileModalHide,
   showPropatiesModal,
   closePropatiesModal,
   updatetrendingCategorySorText,
@@ -199,6 +203,7 @@ export const {
   updateRenkingData,
   updateRenkingDataByBlockchain,
   updateRenkingDataByPostdate,
+  setSelectedProfileImage,
 } = counterSlice.actions;
 
 export default counterSlice.reducer;
