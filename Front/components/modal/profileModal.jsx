@@ -6,6 +6,7 @@ import { ethers } from 'ethers';
 import { nftContractAddress } from '../../config/setting';
 import { fetchProfileImage } from "../../data/nftDataFetcher";
 import { setSelectedProfileImage } from "../../redux/counterSlice";
+import { setProfileImageCookie, getProfileImageCookie } from './cookie.js';
 
 const ProfileModal = () => {
   const { profileModal } = useSelector((state) => state.counter);
@@ -18,8 +19,26 @@ const ProfileModal = () => {
     setSelectedProfileImage(imageUrl);
 
     // Save the selected image URL in local storage
+    // localStorage.setItem('selectedProfileImage', imageUrl);
+
+    // Save the selected image URL in both state and cookie
     localStorage.setItem('selectedProfileImage', imageUrl);
+    setProfileImageCookie(imageUrl); // Save the selected image URL in a cookie
   };
+
+  useEffect(() => {
+    // Detect if the user is connected to their wallet here
+    // For this example, let's assume the user is connected
+    const userIsConnected = true;
+
+    if (userIsConnected) {
+      // Retrieve the profile image from the cookie
+      const storedProfileImage = getProfileImageCookie();
+
+      // Update the profile image in the state
+      setSelectedProfileImage(storedProfileImage);
+    }
+  }, []);
 
   useEffect(() => {
     const storedAddress = localStorage.getItem('defaultAccount');
