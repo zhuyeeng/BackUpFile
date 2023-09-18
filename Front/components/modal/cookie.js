@@ -2,10 +2,18 @@
 
 import Cookies from 'js-cookie';
 
-export const setProfileImageCookie = (imageUrl) => {
-  Cookies.set('selectedProfileImage', imageUrl, { expires: 365 }); // Store the selected profile image for 1 year (adjust as needed)
+// Function to set the profile information in a cookie as a delimited string
+export const setProfileInfoCookie = (address, imageUrl) => {
+  const profileInfo = `${address}:${imageUrl}`;
+  Cookies.set('profileInfo', profileInfo, { expires: 365 });
 };
 
-export const getProfileImageCookie = () => {
-  return Cookies.get('selectedProfileImage') || '/images/avatars/default.jpg'; // Return the default image if the cookie is not set
+// Function to get the profile information from the cookie and split it
+export const getProfileInfoCookie = () => {
+  const profileInfo = Cookies.get('profileInfo');
+  if (profileInfo) {
+    const [address, imageUrl] = profileInfo.split(':');
+    return { address, imageUrl };
+  }
+  return { address: '', imageUrl: '/images/avatars/default.jpg' };
 };

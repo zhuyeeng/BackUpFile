@@ -54,6 +54,10 @@ const SellModal = () => {
   },[])
 
   const sellNFT = async () => {
+    if(priceAmount === ""){
+      alert("Please enter a valid amount before selling.");
+      return;
+    }
     try {
       const tokenId = pid.pid; // Assuming pid.pid contains the token ID
       const price = ethers.utils.parseEther(priceAmount.toString()); // Convert price to Wei

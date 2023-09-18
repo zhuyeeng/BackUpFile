@@ -6,7 +6,7 @@ import { ethers } from 'ethers';
 import { nftContractAddress } from '../../config/setting';
 import { fetchProfileImage } from "../../data/nftDataFetcher";
 import { setSelectedProfileImage } from "../../redux/counterSlice";
-import { setProfileImageCookie, getProfileImageCookie } from './cookie.js';
+import { setProfileInfoCookie, getProfileInfoCookie } from './cookie.js';
 
 const ProfileModal = () => {
   const { profileModal } = useSelector((state) => state.counter);
@@ -15,28 +15,50 @@ const ProfileModal = () => {
   const [selectedProfileImage, setSelectedProfileImage] = useState("/images/avatars/default.jpg"); // Initialize with the default image
   const dispatch = useDispatch();
 
+  // const handleImageClick = (imageUrl) => {
+  //   setSelectedProfileImage(imageUrl);
+
+  //   // Save the selected image URL in local storage
+  //   // localStorage.setItem('selectedProfileImage', imageUrl);
+
+  //   // Save the selected image URL in both state and cookie
+  //   localStorage.setItem('selectedProfileImage', imageUrl);
+  //   setProfileImageCookie(imageUrl); // Save the selected image URL in a cookie
+  // };
+
   const handleImageClick = (imageUrl) => {
     setSelectedProfileImage(imageUrl);
-
-    // Save the selected image URL in local storage
-    // localStorage.setItem('selectedProfileImage', imageUrl);
-
-    // Save the selected image URL in both state and cookie
-    localStorage.setItem('selectedProfileImage', imageUrl);
-    setProfileImageCookie(imageUrl); // Save the selected image URL in a cookie
+  
+    // Assume 'localAddress' contains the user's Ethereum address
+    setProfileInfoCookie(localAddress, imageUrl); // Store both address and image URL
   };
+
+  // useEffect(() => {
+  //   // Detect if the user is connected to their wallet here
+  //   // For this example, let's assume the user is connected
+  //   const userIsConnected = true;
+
+  //   if (userIsConnected) {
+  //     // Retrieve the profile image from the cookie
+  //     const storedProfileImage = getProfileImageCookie();
+
+  //     // Update the profile image in the state
+  //     setSelectedProfileImage(storedProfileImage);
+  //   }
+  // }, []);
 
   useEffect(() => {
     // Detect if the user is connected to their wallet here
     // For this example, let's assume the user is connected
     const userIsConnected = true;
-
+  
     if (userIsConnected) {
-      // Retrieve the profile image from the cookie
-      const storedProfileImage = getProfileImageCookie();
-
-      // Update the profile image in the state
-      setSelectedProfileImage(storedProfileImage);
+      // Retrieve the profile information from the cookie
+      const { address, imageUrl } = getProfileInfoCookie();
+  
+      // Update the profile image and address in the state
+      setSelectedProfileImage(imageUrl);
+      setLocalAddress(address);
     }
   }, []);
 

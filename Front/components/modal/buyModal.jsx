@@ -63,6 +63,10 @@ const BuyModal = () => {
   }, [])
 
   const buyNFT = async () => {
+    if(payAmount === ""){
+      alert("Please enter a valid amount before buying.");
+      return;
+    }
     try {
       const tokenId = pid.pid; // Replace with the selected token ID
       const price = payAmount; // Replace with the selected price
