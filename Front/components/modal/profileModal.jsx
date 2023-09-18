@@ -79,7 +79,7 @@ const ProfileModal = () => {
       .catch((error) => console.error("Error Message: ", error.message));
   }, [localAddress]);
 
-  console.log(NFTImage);
+  // console.log(NFTImage);
 
   return (
     <div>

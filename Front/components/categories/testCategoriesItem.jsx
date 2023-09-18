@@ -38,10 +38,10 @@ const testCategoriesItem = () => {
       return nft.ownerName.toLowerCase() === localAddress;
     });
     setFilteredNFTs(filteredData);
-  }, [userNFTs, localAddress]); // Trigger the filter when userNFTs or localAddress change
+  }, [userNFTs]); // Trigger the filter when userNFTs or localAddress change
 
-  console.log("Data: ", userNFTs);
-  console.log("Address: ", localAddress);
+  // console.log("Data: ", userNFTs);
+  // console.log("Address: ", localAddress);
   console.log("Filtered NFTs(Owned): ", filteredNFTs);
 
   return (

@@ -8,7 +8,7 @@ import "tippy.js/dist/tippy.css";
 import Link from "next/link";
 import Tippy from "@tippyjs/react";
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from "react-icons/md";
-import { bidsModalShow } from "../../redux/counterSlice";
+import { buyModalShow } from "../../redux/counterSlice";
 import { useDispatch } from "react-redux";
 import Likes from "../likes";
 const { fetchCarouselNFTData } = require('../../data/nftDataFetcher');
@@ -134,7 +134,7 @@ const BidsCarousel = () => {
                     <button
                       type="button"
                       className="text-accent font-display text-sm font-semibold"
-                      onClick={() => dispatch(bidsModalShow({ pid, price }))}
+                      onClick={() => dispatch(buyModalShow({ pid, price }))}
                     >
                       Buy
                     </button>
