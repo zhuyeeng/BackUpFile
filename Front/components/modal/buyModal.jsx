@@ -9,14 +9,15 @@ import nftBuySell from '../../data/abi/nftMintAbi.json';
 const BuyModal = () => {
   const pid = useSelector(state => state.counter.pid);
   const { account, balance } = useWallet();
-  const [localBalance, setLocalBalance] = useState('');
+  const [localBalance] = useState(localStorage.getItem('accountBalance'));
   const [isWalletInitialized, setIsWalletInitialized] = useState(false);
   const { buyModal } = useSelector((state) => state.counter);
   const dispatch = useDispatch();
-  const [payAmount, setPayAmount] = useState("");
+  const [payAmount, setPayAmount] = useState(pid?.price||'');
   const [contract, setContract] = useState(null);
   const [ethToUsdRate, setEthToUsdRate] = useState(0);
   console.log("Buy Modal Running");
+  // console.log("Pay Amount: ", payAmount);
   // const [localBalance, setLocalBalance] = useState(localStorage.getItem('accountBalance') || '');
   // const [payAmount, setPayAmount] = useState(pid?.price || '');
   
@@ -45,8 +46,6 @@ const BuyModal = () => {
 
   useEffect(() => {
     console.log("Bid Modal UseEffect#1 running....");
-    setLocalBalance(localStorage.getItem('accountBalance') || '');
-    setPayAmount(pid?.price || '');
     async function fetchEthToUsdRate() {
       try {
         const response = await fetch(
@@ -100,41 +99,37 @@ const BuyModal = () => {
   // };
 
   const buyNFT = async () => {
+    if (payAmount === "") {
+      alert("Please enter a valid amount before buying.");
+      return;
+    }
+  
     try {
       if (window.ethereum && account) {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         const nftContract = new ethers.Contract(nftContractAddress, nftBuySell, signer);
-        setContract(nftContract);
-        setIsWalletInitialized(true);
+  
+        // Rest of your code for buying NFT
+        const tokenId = pid.pid;
+        const price = payAmount;
+        const priceInWei = ethers.utils.parseEther(price.toString());
+  
+        const tx = await nftContract.buyNFT(tokenId, {
+          value: priceInWei,
+        });
+  
+        await tx.wait();
+  
+        console.log("NFT purchased successfully!");
       } else {
-        console.error('MetaMask extension not found or account not connected.');
-        return; // Abort the buyNFT operation if wallet is not initialized
+        console.error("MetaMask extension not found or account not connected.");
       }
-
-      const tokenId = pid.pid; // Replace with the selected token ID
-      const price = payAmount; // Replace with the selected price
-  
-      // Convert the price to Wei (if not already)
-      const priceInWei = ethers.utils.parseEther(price.toString());
-      console.log("priceInWei:", priceInWei.toString());
-
-      console.log("After: ", priceInWei);
-  
-      // Call the buyNFT function from your smart contract
-      const tx = await contract.buyNFT(tokenId, {
-        value: priceInWei,
-      });
-  
-      // Wait for the transaction to be confirmed
-      await tx.wait();
-  
-      // Transaction successful, you can update the UI or show a success message
-      console.log("NFT purchased successfully!");
     } catch (error) {
       console.error("Error buying NFT:", error);
     }
   };
+  
 
   return (
     <div>
@@ -188,7 +183,11 @@ const BuyModal = () => {
                   className="focus:ring-accent h-12 w-full flex-[3] border-0 focus:ring-inse dark:text-jacarta-700"
                   placeholder={pid?.price || ''}
                   value={payAmount}
-                  onChange={(e) => setPayAmount(e.target.value)}
+                  // onChange={(e) => setPayAmount(e.target.value)}
+                  onChange={(e)=>{
+                    const newValue = e.target.value;
+                    setPayAmount(newValue);
+                  }}
                 />
 
                 <div className="bg-jacarta-50 border-jacarta-100 flex flex-1 justify-end self-stretch border-l dark:text-jacarta-700">
