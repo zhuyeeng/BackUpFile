@@ -77,46 +77,30 @@ const SellModal = () => {
   // };
 
   const sellNFT = async () => {
-    console.log("Sell function running");
-    if (priceAmount === "") {
-      alert("Please enter a valid amount before selling.");
-      return;
-    }
-  
-    if (!account) {
-      console.error('Account not connected.');
-      return;
-    }
-  
-    if (!window.ethereum) {
-      console.error('MetaMask extension not found.');
-      return;
-    }
-  
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const nftContract = new ethers.Contract(nftContractAddress, nftBuySell, signer);
-  
-      // Wait for contract initialization
-      await nftContract.deployed();
-  
-      setContract(nftContract);
-      setIsWalletInitialized(true);
-  
-      const tokenId = pid.pid; // Assuming pid.pid contains the token ID
-      const price = ethers.utils.parseEther(priceAmount.toString()); // Convert price to Wei
-  
-      // Call the sellNFT function without sending any Ether
-      const tx = await contract.sellNFT(tokenId, price);
-      const receipt = await tx.wait();
-  
-      // You can add additional logic or UI updates as needed
-      console.log("NFT Listed On Sale!");
+      if (window.ethereum && account) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const nftContract = new ethers.Contract(nftContractAddress, nftBuySell, signer);
+
+        const tokenId = pid.pid; // Assuming pid.pid contains the token ID
+        const price = ethers.utils.parseEther(priceAmount.toString()); // Convert price to Wei
+
+        // Call the sellNFT function without sending any Ether
+        const tx = await nftContract.sellNFT(tokenId, price);
+        const receipt = await tx.wait();
+        dispatch(sellModalHide());
+
+        // You can add additional logic or UI updates as needed
+        console.log("NFT Listed On Sale!");
+      } else {
+        console.error('MetaMask extension not found or account not connected.');
+      }
     } catch (error) {
       console.error("Error listing NFT: ", error);
     }
   };
+
 
   return (
     <div>

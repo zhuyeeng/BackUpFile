@@ -331,7 +331,7 @@ const item = () => {
                       </div>
                     ) : null}
 
-                    {/* {price === null && ownerName.toLowerCase() === localAddress ? (
+                    {price === null && ownerName.toLowerCase() === localAddress ? (
                       <div>
                         <Link href="#">
                           <button
@@ -342,9 +342,9 @@ const item = () => {
                           </button>
                         </Link>
                       </div>
-                    ) : null} */}
+                    ) : null}
 
-                    {/* {price !== null && ownerName.toLowerCase() === localAddress ? (
+                    {price !== null && ownerName.toLowerCase() === localAddress ? (
                       <div>
                         
                         <div className="dark:border-jacarta-600 sm:border-jacarta-100 mt-4 sm:mt-0 sm:w-1/2 pb-2">
@@ -354,7 +354,7 @@ const item = () => {
                           <h3>{ListedTime}</h3>
                         </div>
                       </div>
-                    ) : null} */}
+                    ) : null}
 
                   </div>
                   {/* <!-- end bid --> */}
