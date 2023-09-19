@@ -8,9 +8,13 @@ import Header01 from "./header/Header01";
 import Header02 from "./header/Header02";
 import Header03 from "./header/Header03";
 import Header04 from "./header/Header04";
+import { useSelector } from 'react-redux';
 
 export default function Layout({ children }) {
   const route = useRouter();
+  console.log("layout render...");
+  const sellModal = useSelector((state) => state.counter.sellModal);
+  const buyModal = useSelector((state) => state.counter.buyModal);
   // header start
   let header;
   if (
@@ -33,8 +37,8 @@ export default function Layout({ children }) {
     <>
       {header}
       <Wallet_modal />
-      <SellModal />
-      <BuyModal />
+      {sellModal && <SellModal />}
+      {buyModal && <BuyModal />}
       <ProfileModal />
       <main>{children}</main>
       <Footer />
