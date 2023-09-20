@@ -17,9 +17,6 @@ const BuyModal = () => {
   const [contract, setContract] = useState(null);
   const [ethToUsdRate, setEthToUsdRate] = useState(0);
   console.log("Buy Modal Running");
-  // console.log("Pay Amount: ", payAmount);
-  // const [localBalance, setLocalBalance] = useState(localStorage.getItem('accountBalance') || '');
-  // const [payAmount, setPayAmount] = useState(pid?.price || '');
   
   // useEffect(() => {
   //   const storedBalance = localStorage.getItem('accountBalance');
