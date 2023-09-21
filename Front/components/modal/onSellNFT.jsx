@@ -10,14 +10,11 @@ import nftBuySell from '../../data/abi/nftMintAbi.json';
 
 const SellModal = () => {
   const { account } = useWallet();
-  const [isWalletInitialized, setIsWalletInitialized] = useState(false);
   const [priceAmount, setPriceAmount] = useState("");
   const { sellModal } = useSelector((state) => state.counter);
   const dispatch = useDispatch();
   const [ethToUsdRate, setEthToUsdRate] = useState(0);
-
   const pid = useSelector(state => state.counter.pid);
-  const [contract, setContract] = useState(null);
   console.log("Sell Modal running");
   
   // useEffect(() => {
