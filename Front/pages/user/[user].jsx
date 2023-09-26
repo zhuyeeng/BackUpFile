@@ -20,15 +20,22 @@ const User = () => {
   const [localAddress, setLocalAddress] = useState("");
   const [likesImage, setLikesImage] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [cookieData, setCookieData] = useState({ address: "", imageUrl: "" });
+  const [cookieData, setCookieData] = useState();
 
   // Fetch and update the cookie data
   useEffect(() => {
     const fetchData = async () => {
       const data = await getAllProfileInfoCookies();
-      // console.log("Data From Cookie: ", data);
       setCookieData(data);
+  
+      // Move the code that depends on cookieData here
+      const getUserData = data ? data.find(item => item.address === localAddress) : null;
+      if (getUserData) {
+        setProfileImage(getUserData.imageUrl);
+        console.log(getUserData.address);
+      }
     };
+  
     fetchData();
   }, []);
 
@@ -37,27 +44,33 @@ const User = () => {
     setLikesImage(!likesImage);
   };
 
-  // Check if the address matches and set the profile image accordingly
-  useEffect(() => {
-    if (cookieData.address === localAddress) {
-      setProfileImage(cookieData.imageUrl);
-    } else {
-      setProfileImage("/images/avatars/default.jpg");
-    }
-  }, [cookieData, localAddress]);
+  // // Fetch the stored address and set it in local state
+  // useEffect(() => {
+  //   const storedAddress = localStorage.getItem("defaultAccount");
 
-  // Fetch the stored address and set it in local state
-  useEffect(() => {
-    const storedAddress = localStorage.getItem("defaultAccount");
+  //   if (storedAddress) {
+  //     setLocalAddress(storedAddress);
+  //   }
 
-    if (storedAddress) {
-      setLocalAddress(storedAddress);
-    }
+  //   setTimeout(() => {
+  //     setCopied(false);
+  //   }, 2000);
+  // }, [copied]);
 
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
-  }, [copied]);
+  // Fetch and update the cookie data
+useEffect(() => {
+
+  // Rest of the code remains the same
+  const storedAddress = localStorage.getItem("defaultAccount");
+
+  if (storedAddress) {
+    setLocalAddress(storedAddress);
+  }
+
+  setTimeout(() => {
+    setCopied(false);
+  }, 2000);
+}, []);
 
   return (
     <>

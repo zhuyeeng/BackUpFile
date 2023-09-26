@@ -74,7 +74,7 @@ export const getAllProfileInfoCookies = async () => {
       break;
     }
 
-    console.log(profileInfoCookie);
+    // console.log(profileInfoCookie);
 
     // Decode the URL-encoded data
     const decodedData = decodeURIComponent(profileInfoCookie);
