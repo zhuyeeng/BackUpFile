@@ -10,42 +10,54 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import Meta from "../../components/Meta";
 import { useDispatch } from "react-redux";
 import { profileModalShow } from "../../redux/counterSlice";
+import { getAllProfileInfoCookies } from "../../components/modal/cookie";
 
 const User = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const pid = router.query.user;
-  const [ profileImage, setProfileImage ] = useState("");
-  const [localAddress, setLocalAddress] = useState(''); 
+  const [profileImage, setProfileImage] = useState("");
+  const [localAddress, setLocalAddress] = useState("");
   const [likesImage, setLikesImage] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [cookieData, setCookieData] = useState({ address: "", imageUrl: "" });
 
+  // Fetch and update the cookie data
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getAllProfileInfoCookies();
+      // console.log("Data From Cookie: ", data);
+      setCookieData(data);
+    };
+    fetchData();
+  }, []);
+
+  // Handle the "Like" button click
   const handleLikes = () => {
-    if (!likesImage) {
-      setLikesImage(true);
-    } else {
-      setLikesImage(false);
-    }
+    setLikesImage(!likesImage);
   };
 
+  // Check if the address matches and set the profile image accordingly
   useEffect(() => {
-    const storedAddress = localStorage.getItem('defaultAccount');
-    const storedProfileImage = localStorage.getItem('selectedProfileImage');
+    if (cookieData.address === localAddress) {
+      setProfileImage(cookieData.imageUrl);
+    } else {
+      setProfileImage("/images/avatars/default.jpg");
+    }
+  }, [cookieData, localAddress]);
+
+  // Fetch the stored address and set it in local state
+  useEffect(() => {
+    const storedAddress = localStorage.getItem("defaultAccount");
 
     if (storedAddress) {
       setLocalAddress(storedAddress);
-    }
-
-    if (storedProfileImage) {
-      // Set the stored profile image as the initial state
-      setProfileImage(storedProfileImage);
     }
 
     setTimeout(() => {
       setCopied(false);
     }, 2000);
   }, [copied]);
-  // console.log('test');
 
   return (
     <>
@@ -75,34 +87,18 @@ const User = () => {
                       height={141}
                       src ={profileImage}
                       alt="Deafult Profile Image"
-                      className="dark:border-jacarta-600 rounded-xl border-[5px] border-white w-full h-full object-contain"
-                      onClick={() => dispatch(profileModalShow())}
+                      className="dark:border-jacarta-600 rounded-xl border-[5px] border-white w-full h-full object-cover"                      onClick={() => dispatch(profileModalShow())}
                     />
                     <div
                       className="dark:border-jacarta-600 bg-green absolute -right-3 bottom-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white"
                       data-tippy-content="Verified Collection"
                     >
-                      {/* {icon && (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          width="24"
-                          height="24"
-                          className="h-[.875rem] w-[.875rem] fill-white"
-                        >
-                          <path fill="none" d="M0 0h24v24H0z"></path>
-                          <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"></path>
-                        </svg>
-                      )} */}
                     </div>
                   </figure>
                 </div>
 
                 <div className="container">
                   <div className="text-center">
-                    {/* <h2 className="font-display text-jacarta-700 mb-2 text-4xl font-medium dark:text-white">
-                      {title}
-                    </h2> */}
                     <div className="dark:bg-jacarta-700 dark:border-jacarta-600 border-jacarta-100 mb-8 inline-flex items-center justify-center rounded-full border bg-white py-1.5 px-4">
                       <Tippy content="ETH">
                         <svg className="icon h-4 w-4 mr-1">
@@ -126,13 +122,6 @@ const User = () => {
                         </button>
                       </Tippy>
                     </div>
-
-                    {/* <p className="dark:text-jacarta-300 mx-auto mb-2 max-w-xl text-lg">
-                      {text}
-                    </p>
-                    <span className="text-jacarta-400">
-                      Joined December {joinYear}
-                    </span> */}
 
                     <div className="mt-6 flex items-center justify-center space-x-2.5 relative">
                       <div className="dark:border-jacarta-600 dark:hover:bg-jacarta-600 border-jacarta-100 hover:bg-jacarta-100 dark:bg-jacarta-700 rounded-xl border bg-white">

@@ -8,38 +8,14 @@ import nftBuySell from '../../data/abi/nftMintAbi.json';
 
 const BuyModal = () => {
   const pid = useSelector(state => state.counter.pid);
-  const { account, balance } = useWallet();
+  const { account } = useWallet();
   const [localBalance] = useState(localStorage.getItem('accountBalance'));
-  const [isWalletInitialized, setIsWalletInitialized] = useState(false);
   const { buyModal } = useSelector((state) => state.counter);
   const dispatch = useDispatch();
   const [payAmount, setPayAmount] = useState(pid?.price||'');
-  const [contract, setContract] = useState(null);
   const [ethToUsdRate, setEthToUsdRate] = useState(0);
+  const [isTransactionPending, setIsTransactionPending] = useState(false);
   console.log("Buy Modal Running");
-  
-  // useEffect(() => {
-  //   const storedBalance = localStorage.getItem('accountBalance');
-  //   if (storedBalance) {
-  //     setLocalBalance(storedBalance);
-  //   }
-
-  //   if(pid?.price !== null){
-  //     const oriPrice = pid?.price;
-  //     setPayAmount(oriPrice);
-  //   }
-
-  //   // if (window.ethereum && account) {
-  //   //   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  //   //   const signer = provider.getSigner();
-  //   //   const nftContract = new ethers.Contract(nftContractAddress, nftBuySell, signer);
-  //   //   setContract(nftContract);
-  //   //   setIsWalletInitialized(true);
-  //   // } else {
-  //   //   console.error('MetaMask extension not found or account not connected.');
-  //   // }
-  // }, [account,pid]);
-  
 
   useEffect(() => {
     console.log("Bid Modal UseEffect#1 running....");
@@ -64,37 +40,6 @@ const BuyModal = () => {
     fetchEthToUsdRate();
   },[]); // Include pid and payAmount as dependencies
 
-  //old version
-  // const buyNFT = async () => {
-  //   if(payAmount === ""){
-  //     alert("Please enter a valid amount before buying.");
-  //     return;
-  //   }
-  //   try {
-  //     const tokenId = pid.pid; // Replace with the selected token ID
-  //     const price = payAmount; // Replace with the selected price
-  
-  //     // Convert the price to Wei (if not already)
-  //     const priceInWei = ethers.utils.parseEther(price.toString());
-  //     console.log("priceInWei:", priceInWei.toString());
-
-  //     console.log("After: ", priceInWei);
-  
-  //     // Call the buyNFT function from your smart contract
-  //     const tx = await contract.buyNFT(tokenId, {
-  //       value: priceInWei,
-  //     });
-  
-  //     // Wait for the transaction to be confirmed
-  //     await tx.wait();
-  
-  //     // Transaction successful, you can update the UI or show a success message
-  //     console.log("NFT purchased successfully!");
-  //   } catch (error) {
-  //     console.error("Error buying NFT:", error);
-  //   }
-  // };
-
   const buyNFT = async () => {
     if (payAmount === "") {
       alert("Please enter a valid amount before buying.");
@@ -103,6 +48,7 @@ const BuyModal = () => {
   
     try {
       if (window.ethereum && account) {
+        setIsTransactionPending(true);
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         const nftContract = new ethers.Contract(nftContractAddress, nftBuySell, signer);
@@ -119,15 +65,17 @@ const BuyModal = () => {
         await tx.wait();
   
         console.log("NFT purchased successfully!");
+        dispatch(buyModalHide());
       } else {
         console.error("MetaMask extension not found or account not connected.");
       }
     } catch (error) {
       console.error("Error buying NFT:", error);
+    } finally{
+      setIsTransactionPending(false);
     }
   };
   
-
   return (
     <div>
       <div className={buyModal ? "modal fade show block" : "modal fade"}>
@@ -209,8 +157,9 @@ const BuyModal = () => {
                   type="button"
                   className="bg-accent shadow-accent-volume hover:bg-accent-dark rounded-full py-3 px-8 text-center font-semibold text-white transition-all"
                   onClick={buyNFT}
+                  disabled={isTransactionPending}
                 >
-                  Buy
+                  {isTransactionPending ? "Processing....": "Buy"}
                 </button>
               </div>
             </div>

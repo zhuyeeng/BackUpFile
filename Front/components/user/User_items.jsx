@@ -3,7 +3,7 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import Activity_item from "../collectrions/Activity_item";
 import Image from "next/image";
 import OnSaleItem from "../categories/OnSaleItem";
-import TestItem from "../categories/testCategoriesItem";
+import TestItem from "../categories/ownedCategoriesItem";
 
 const User_items = () => {
   const [itemActive, setItemActive] = useState(1);

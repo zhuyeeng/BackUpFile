@@ -10,27 +10,13 @@ import nftBuySell from '../../data/abi/nftMintAbi.json';
 
 const SellModal = () => {
   const { account } = useWallet();
-  const [isWalletInitialized, setIsWalletInitialized] = useState(false);
   const [priceAmount, setPriceAmount] = useState("");
   const { sellModal } = useSelector((state) => state.counter);
   const dispatch = useDispatch();
   const [ethToUsdRate, setEthToUsdRate] = useState(0);
-
   const pid = useSelector(state => state.counter.pid);
-  const [contract, setContract] = useState(null);
+  const [isTransactionPending, setIsTransactionPending] = useState(false);
   console.log("Sell Modal running");
-  
-  // useEffect(() => {
-  //   if (window.ethereum && account) {
-  //     const provider = new ethers.providers.Web3Provider(window.ethereum);
-  //     const signer = provider.getSigner();
-  //     const nftContract = new ethers.Contract(nftContractAddress, nftBuySell, signer);
-  //     setContract(nftContract);
-  //     setIsWalletInitialized(true);
-  //   } else {
-  //     console.error('MetaMask extension not found or account not connected.');
-  //   }
-  // }, [account]);
 
   useEffect(() => {
     console.log("Runingng the change to USD.");
@@ -55,30 +41,10 @@ const SellModal = () => {
     fetchEthToUsdRate();
   },[])
 
-  // old version
-  // const sellNFT = async () => {
-  //   if(priceAmount === ""){
-  //     alert("Please enter a valid amount before selling.");
-  //     return;
-  //   }
-  //   try {
-  //     const tokenId = pid.pid; // Assuming pid.pid contains the token ID
-  //     const price = ethers.utils.parseEther(priceAmount.toString()); // Convert price to Wei
-  
-  //     // Call the sellNFT function without sending any Ether
-  //     const tx = await contract.sellNFT(tokenId, price);
-  //     const receipt = await tx.wait();
-  
-  //     // You can add additional logic or UI updates as needed
-  //     console.log("NFT Listed On Sale!");
-  //   } catch (error) {
-  //     console.error("Error listing NFT: ", error);
-  //   }
-  // };
-
   const sellNFT = async () => {
     try {
       if (window.ethereum && account) {
+        setIsTransactionPending(true);
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         const nftContract = new ethers.Contract(nftContractAddress, nftBuySell, signer);
@@ -98,6 +64,8 @@ const SellModal = () => {
       }
     } catch (error) {
       console.error("Error listing NFT: ", error);
+    } finally {
+      setIsTransactionPending(false);
     }
   };
 
@@ -164,12 +132,6 @@ const SellModal = () => {
                 </div>
               </div>
 
-              {/* <div className="text-right">
-                <span className="dark:text-jacarta-400 text-sm">
-                  Balance: {`${localBalance}`} WETH
-                </span>
-              </div> */}
-
             </div>
             {/* <!-- end body --> */}
 
@@ -179,8 +141,9 @@ const SellModal = () => {
                   type="button"
                   className="bg-accent shadow-accent-volume hover:bg-accent-dark rounded-full py-3 px-8 text-center font-semibold text-white transition-all"
                   onClick={sellNFT}
+                  disabled={isTransactionPending}
                 >
-                  Sell
+                {isTransactionPending ? "Processing...": "Sell"}
                 </button>
               </div>
             </div>

@@ -1,19 +1,127 @@
 // cookie.js
 
 import Cookies from 'js-cookie';
+import { fetchProfileImage } from '../../data/nftDataFetcher';
 
 // Function to set the profile information in a cookie as a delimited string
 export const setProfileInfoCookie = (address, imageUrl) => {
-  const profileInfo = `${address}:${imageUrl}`;
-  Cookies.set('profileInfo', profileInfo, { expires: 365 });
+  let slotNumber = 0;
+  while (true) {
+    const profileInfoInCookie = Cookies.get(`profileInfo${slotNumber}`);
+
+    if (profileInfoInCookie === undefined) {
+      const profileInfo = `${address};${imageUrl}`;
+      Cookies.set(`profileInfo${slotNumber}`, profileInfo, { expires: 365 });
+      break; // Exit the loop after successfully setting the cookie
+    } else {
+      const decodedProfileInfo = decodeURIComponent(profileInfoInCookie);
+      const [cookieAddress] = decodedProfileInfo.split(';');
+
+      if (cookieAddress === address) {
+        const profileInfo = `${address};${imageUrl}`;
+        Cookies.set(`profileInfo${slotNumber}`, profileInfo, { expires: 365 });
+        break; // Exit the loop after successfully setting the cookie
+      } else {
+        slotNumber++;
+      }
+    }
+  }
 };
 
-// Function to get the profile information from the cookie and split it
-export const getProfileInfoCookie = () => {
-  const profileInfo = Cookies.get('profileInfo');
-  if (profileInfo) {
-    const [address, imageUrl] = profileInfo.split(':');
-    return { address, imageUrl };
+// // Function to get the profile information from the cookie and split it
+// export const getProfileInfoCookie = async () => {
+//   let slotNumber = 0;
+//   while(true){
+//       // First, retrieve the data from the cookie
+//   const profileInfoCookie = Cookies.get(`profileInfo${slotNumber}`);
+//   console.log(profileInfoCookie);
+
+//   if (profileInfoCookie) {
+//     // Decode the URL-encoded data
+//     const decodedData = decodeURIComponent(profileInfoCookie);
+
+//     // Split the decoded data using a semicolon
+//     const [address, imageUrl] = decodedData.split(';');
+
+//     // Check NFT ownership using the fetchProfileNFTData function
+//     const isNFTOwned = await checkOwner(address, imageUrl);
+
+//     if (isNFTOwned) {
+//       return { address, imageUrl }; // Return the values obtained from the cookie
+//     } else {
+//       // NFT is not owned, update the image URL to the default image
+//       const defaultImageUrl = '/images/avatars/default.jpg';
+//       Cookies.set('profileInfo', `${address};${defaultImageUrl}`, { expires: 365 });
+//       return { address, imageUrl: defaultImageUrl };
+//     }
+//   } else {
+//     // Return the default values when the cookie doesn't exist or is empty
+//     return { address: '', imageUrl: '/images/avatars/default.jpg' };
+//   }
+//   }
+// };
+
+// Function to get all profile information from the cookie and split it
+export const getAllProfileInfoCookies = async () => {
+  const allProfileInfo = [];
+
+  for (let slotNumber = 0; ; slotNumber++) {
+    // Retrieve the data from the cookie
+    const profileInfoCookie = Cookies.get(`profileInfo${slotNumber}`);
+
+    if (profileInfoCookie === undefined) {
+      // Exit the loop when there are no more profileInfo slots
+      break;
+    }
+
+    console.log(profileInfoCookie);
+
+    // Decode the URL-encoded data
+    const decodedData = decodeURIComponent(profileInfoCookie);
+
+    // Split the decoded data using a semicolon
+    const [address, imageUrl] = decodedData.split(';');
+
+    // Check NFT ownership using the fetchProfileNFTData function
+    const isNFTOwned = await checkOwner(address, imageUrl);
+
+    if (isNFTOwned) {
+      allProfileInfo.push({ address, imageUrl });
+    } else {
+      // NFT is not owned, update the image URL to the default image
+      const defaultImageUrl = '/images/avatars/default.jpg';
+      Cookies.set(`profileInfo${slotNumber}`, `${address};${defaultImageUrl}`, { expires: 365 });
+      allProfileInfo.push({ address, imageUrl: defaultImageUrl });
+    }
   }
-  return { address: '', imageUrl: '/images/avatars/default.jpg' };
+
+  if (allProfileInfo.length > 0) {
+    return allProfileInfo;
+  } else {
+    // Return the default values when there are no profileInfo slots in the cookie
+    return [{ address: '', imageUrl: '/images/avatars/default.jpg' }];
+  }
+};
+
+// Function to check NFT ownership
+async function checkOwner(address, imageUrl) {
+  // Implement the logic to check NFT ownership using the fetched NFT data
+  const nftData = await fetchProfileImage();
+
+  // Iterate through the NFT data and check if any NFT matches the provided address and imageUrl
+  const isOwned = nftData.some((nft) => {
+    // Compare address and imageUrl with nft.ownerName and nft.image respectively
+    return nft.ownerName.toLowerCase() === address && nft.image === imageUrl;
+  });
+
+  return isOwned;
+}
+
+export const getProfileImageCookie = () => {
+  const profileImage = Cookies.get('profileInfo');
+  if (profileImage) {
+    const [, imageUrl] = profileImage.split(';');
+    return imageUrl;
+  }
+  return '/images/avatars/default.jpg';
 };
