@@ -22,55 +22,44 @@ const User = () => {
   const [copied, setCopied] = useState(false);
   const [cookieData, setCookieData] = useState();
 
-  // Fetch and update the cookie data
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getAllProfileInfoCookies();
-      setCookieData(data);
-  
-      // Move the code that depends on cookieData here
-      const getUserData = data ? data.find(item => item.address === localAddress) : null;
-      if (getUserData) {
-        setProfileImage(getUserData.imageUrl);
-        console.log(getUserData.address);
-      }
-    };
-  
-    fetchData();
-  }, []);
-
   // Handle the "Like" button click
   const handleLikes = () => {
     setLikesImage(!likesImage);
   };
 
-  // // Fetch the stored address and set it in local state
-  // useEffect(() => {
-  //   const storedAddress = localStorage.getItem("defaultAccount");
+  // Fetch the stored address and set it in local state
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAllProfileInfoCookies();
+  
+        // Log and compare each address
+        data.forEach(item => {
+          const addressFromCode = item.address;
+  
+          console.log(addressFromCode); // Log the address from the code
+  
+          if (addressFromCode === localAddress) {
+            // Perform actions when the address matches localAddress
+            console.log("Match found!");
+            setProfileImage(item.imageUrl);
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    const storedAddress = localStorage.getItem("defaultAccount");
 
-  //   if (storedAddress) {
-  //     setLocalAddress(storedAddress);
-  //   }
+    if (storedAddress) {
+      setLocalAddress(storedAddress);
+    }
 
-  //   setTimeout(() => {
-  //     setCopied(false);
-  //   }, 2000);
-  // }, [copied]);
-
-  // Fetch and update the cookie data
-useEffect(() => {
-
-  // Rest of the code remains the same
-  const storedAddress = localStorage.getItem("defaultAccount");
-
-  if (storedAddress) {
-    setLocalAddress(storedAddress);
-  }
-
-  setTimeout(() => {
-    setCopied(false);
-  }, 2000);
-}, []);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
+    fetchData();
+  }, [copied]);
 
   return (
     <>

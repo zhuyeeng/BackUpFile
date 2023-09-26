@@ -28,39 +28,6 @@ export const setProfileInfoCookie = (address, imageUrl) => {
   }
 };
 
-// // Function to get the profile information from the cookie and split it
-// export const getProfileInfoCookie = async () => {
-//   let slotNumber = 0;
-//   while(true){
-//       // First, retrieve the data from the cookie
-//   const profileInfoCookie = Cookies.get(`profileInfo${slotNumber}`);
-//   console.log(profileInfoCookie);
-
-//   if (profileInfoCookie) {
-//     // Decode the URL-encoded data
-//     const decodedData = decodeURIComponent(profileInfoCookie);
-
-//     // Split the decoded data using a semicolon
-//     const [address, imageUrl] = decodedData.split(';');
-
-//     // Check NFT ownership using the fetchProfileNFTData function
-//     const isNFTOwned = await checkOwner(address, imageUrl);
-
-//     if (isNFTOwned) {
-//       return { address, imageUrl }; // Return the values obtained from the cookie
-//     } else {
-//       // NFT is not owned, update the image URL to the default image
-//       const defaultImageUrl = '/images/avatars/default.jpg';
-//       Cookies.set('profileInfo', `${address};${defaultImageUrl}`, { expires: 365 });
-//       return { address, imageUrl: defaultImageUrl };
-//     }
-//   } else {
-//     // Return the default values when the cookie doesn't exist or is empty
-//     return { address: '', imageUrl: '/images/avatars/default.jpg' };
-//   }
-//   }
-// };
-
 // Function to get all profile information from the cookie and split it
 export const getAllProfileInfoCookies = async () => {
   const allProfileInfo = [];
@@ -73,8 +40,6 @@ export const getAllProfileInfoCookies = async () => {
       // Exit the loop when there are no more profileInfo slots
       break;
     }
-
-    // console.log(profileInfoCookie);
 
     // Decode the URL-encoded data
     const decodedData = decodeURIComponent(profileInfoCookie);
