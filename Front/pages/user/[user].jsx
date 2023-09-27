@@ -20,7 +20,6 @@ const User = () => {
   const [localAddress, setLocalAddress] = useState("");
   const [likesImage, setLikesImage] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [cookieData, setCookieData] = useState();
 
   // Handle the "Like" button click
   const handleLikes = () => {
@@ -29,26 +28,6 @@ const User = () => {
 
   // Fetch the stored address and set it in local state
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getAllProfileInfoCookies();
-  
-        // Log and compare each address
-        data.forEach(item => {
-          const addressFromCode = item.address;
-  
-          console.log(addressFromCode); // Log the address from the code
-  
-          if (addressFromCode === localAddress) {
-            // Perform actions when the address matches localAddress
-            console.log("Match found!");
-            setProfileImage(item.imageUrl);
-          }
-        });
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
     const storedAddress = localStorage.getItem("defaultAccount");
 
     if (storedAddress) {
@@ -58,8 +37,27 @@ const User = () => {
     setTimeout(() => {
       setCopied(false);
     }, 2000);
-    fetchData();
   }, [copied]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAllProfileInfoCookies();
+
+        data.forEach(item => {
+          if(item.address === localAddress){
+            console.log("Matched");
+            setProfileImage(item.imageUrl);
+          }
+        })
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  })
 
   return (
     <>
@@ -89,7 +87,8 @@ const User = () => {
                       height={141}
                       src ={profileImage}
                       alt="Deafult Profile Image"
-                      className="dark:border-jacarta-600 rounded-xl border-[5px] border-white w-full h-full object-cover"                      onClick={() => dispatch(profileModalShow())}
+                      className="dark:border-jacarta-600 rounded-xl border-[5px] border-white w-full h-full object-cover"                      
+                      onClick={() => dispatch(profileModalShow())}
                     />
                     <div
                       className="dark:border-jacarta-600 bg-green absolute -right-3 bottom-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white"

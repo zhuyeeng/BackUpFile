@@ -56,6 +56,7 @@ const SellModal = () => {
         const tx = await nftContract.sellNFT(tokenId, price);
         const receipt = await tx.wait();
         dispatch(sellModalHide());
+        window.location.reload();
 
         // You can add additional logic or UI updates as needed
         console.log("NFT Listed On Sale!");

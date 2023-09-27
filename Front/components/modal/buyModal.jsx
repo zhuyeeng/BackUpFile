@@ -66,6 +66,7 @@ const BuyModal = () => {
   
         console.log("NFT purchased successfully!");
         dispatch(buyModalHide());
+        window.location.reload(); // This will refresh the page
       } else {
         console.error("MetaMask extension not found or account not connected.");
       }

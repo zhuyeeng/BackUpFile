@@ -34,6 +34,8 @@ const ProfileModal = () => {
 
   const changeProfileImage = async (imageURL) => {
     setProfileInfoCookie(localAddress, imageURL);
+    dispatch(profileModalHide);
+    window.location.reload();
   };
 
   return (
