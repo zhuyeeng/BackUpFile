@@ -12,7 +12,7 @@ const ProfileModal = () => {
   const [NFTImage, setNFTImage] = useState([]);
   const [localAddress] = useState(localStorage.getItem('defaultAccount'));
   const dispatch = useDispatch();
-  const [profileImage, setProfileImage] = useState();
+  const [profileImage, setProfileImage] = useState("/images/avatars/avatar_1.jpg");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,12 +68,15 @@ const ProfileModal = () => {
             {/* <!-- Body --> */}
             <div className="modal-body p-6">
               <div className="flex justify-center">
+              <figure className="relative h-40 w-40 dark:border-jacarta-600 rounded-xl border-[5px] border-white flex justify-center">
                 <Image
-                  width={130}
-                  height={130}
-                  src={profileImage}
-                  alt="Default Profile Image"
+                    width={141}
+                    height={141}
+                    src ={profileImage}
+                    alt="Deafult Profile Image"
+                    className="dark:border-jacarta-600 rounded-xl border-[5px] border-white w-full h-full object-cover"
                 />
+              </figure>
               </div>
             </div>
             {/* <!-- end body --> */}
@@ -82,24 +85,28 @@ const ProfileModal = () => {
               <div className="flex">
                 {NFTImage.length > 0 ? (
                   <>
-                  <Image
-                    onClick={() => changeProfileImage('/images/avatars/default.jpg')}
-                    width={130}
-                    height={130}
-                    src='/images/avatars/default.jpg'
-                    alt="Default   Image"
-                  />
-                    {NFTImage.map((item, index) => (
-                      <div key={index} className="mr-4"> {/* Add margin for spacing */}
-                        <Image
-                          onClick={() => changeProfileImage(item.image)}
-                          width={130}
-                          height={130}
-                          src={item.image}
-                          alt="NFT Image"
-                        />
-                      </div>
-                    ))}
+                  <div className="h-40 w-40">
+                    <Image
+                      onClick={() => changeProfileImage('/images/avatars/default.jpg')}
+                      width={141}
+                      height={141}
+                      src='/images/avatars/default.jpg'
+                      alt="Default Image"
+                      className="border-[5px] w-full h-full object-cover cursor-pointer"
+                    />
+                  </div>
+                  {NFTImage.map((item, index) => (
+                    <div key={index} className="h-40 w-40">
+                      <Image
+                        onClick={() => changeProfileImage(item.image)}
+                        width={141}
+                        height={141}
+                        src={item.image}
+                        alt="NFT Image"
+                        className="border-[5px] w-full h-full object-cover cursor-pointer"
+                      />
+                    </div>
+                  ))}
                   </>
                 ) : (
                   <span>Loading...</span>

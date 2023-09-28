@@ -16,10 +16,11 @@ const User = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const pid = router.query.user;
-  const [profileImage, setProfileImage] = useState("");
+  const [profileImage, setProfileImage] = useState("/images/avatars/avatar_1.jpg");
   const [localAddress, setLocalAddress] = useState("");
   const [likesImage, setLikesImage] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading]= useState(true);
 
   // Handle the "Like" button click
   const handleLikes = () => {
